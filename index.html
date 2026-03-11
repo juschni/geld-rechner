@@ -1,69 +1,151 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Currency Converter</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        input, select {
-            padding: 10px;
-            margin: 5px;
-        }
-        button {
-            padding: 10px 15px;
-            font-size: 16px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hr.blackbox – Geld-Rechner</title>
+  <style>
+    :root { --accent: #f97316; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #050816;
+      color: #e4e4e7;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 16px;
+    }
+    .card {
+      width: 100%;
+      max-width: 480px;
+      background: #0f172a;
+      border: 1px solid rgba(148,163,184,0.2);
+      border-radius: 20px;
+      padding: 28px 24px 32px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+    }
+    .brand { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #64748b; margin-bottom: 6px; }
+    h1 { font-size: 22px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+    .sub { font-size: 13px; color: #94a3b8; margin-bottom: 24px; }
+    label { display: block; font-size: 12px; color: #94a3b8; margin-bottom: 5px; margin-top: 14px; }
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      background: #020617;
+      border: 1px solid rgba(148,163,184,0.3);
+      border-radius: 10px;
+      color: #e4e4e7;
+      font-size: 14px;
+    }
+    input:focus, select:focus { outline: none; border-color: var(--accent); }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .btn {
+      margin-top: 22px;
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #f97316, #ea580c);
+      border: none;
+      border-radius: 999px;
+      color: #fff7ed;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(234,88,12,0.5);
+      transition: filter 0.15s, transform 0.15s;
+    }
+    .btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+    .result {
+      margin-top: 20px;
+      padding: 16px;
+      background: #020617;
+      border: 1px solid rgba(148,163,184,0.2);
+      border-radius: 14px;
+      display: none;
+    }
+    .result .big { font-size: 28px; font-weight: 800; color: var(--accent); }
+    .result .detail { font-size: 13px; color: #94a3b8; margin-top: 6px; line-height: 1.6; }
+    .hint { font-size: 11px; color: #475569; margin-top: 18px; text-align: center; }
+  </style>
 </head>
 <body>
-    <h1>Currency Converter</h1>
-    <form id="converter">
-        <input type="number" id="amount" placeholder="Amount" required>
-        <select id="fromCurrency">
-            <option value="USD">USD</option>
-            <option value="EUR">EUR</option>
-            <option value="GBP">GBP</option>
-            <option value="JPY">JPY</option>
-            <option value="AUD">AUD</option>
-        </select>
-        <span>to</span>
-        <select id="toCurrency">
-            <option value="USD">USD</option>
-            <option value="EUR">EUR</option>
-            <option value="GBP">GBP</option>
-            <option value="JPY">JPY</option>
-            <option value="AUD">AUD</option>
-        </select>
-        <button type="submit">Convert</button>
-    </form>
-    <h2 id="result"></h2>
+<div class="card">
+  <div class="brand">hr.blackbox</div>
+  <h1>Geld-Rechner</h1>
+  <p class="sub">Rechne aus, wie viel Geld dir wirklich zusteht.</p>
 
-    <script>
-        const converter = document.getElementById('converter');
-        const result = document.getElementById('result');
+  <div class="grid">
+    <div>
+      <label>Stundenlohn brutto (€)</label>
+      <input type="number" id="rate" step="0.01" min="0" placeholder="z.B. 14.50" />
+    </div>
+    <div>
+      <label>Stunden pro Monat</label>
+      <input type="number" id="hours" step="0.5" min="0" placeholder="z.B. 160" />
+    </div>
+  </div>
 
-        const exchangeRates = {
-            USD: { EUR: 0.85, GBP: 0.75, JPY: 110, AUD: 1.3 },
-            EUR: { USD: 1.18, GBP: 0.88, JPY: 129, AUD: 1.54 },
-            GBP: { USD: 1.33, EUR: 1.14, JPY: 148, AUD: 1.73 },
-            JPY: { USD: 0.0091, EUR: 0.0078, GBP: 0.0068, AUD: 0.012 },
-            AUD: { USD: 0.77, EUR: 0.65, GBP: 0.58, JPY: 83 }
-        };
+  <div class="grid">
+    <div>
+      <label>Nachtschicht-Zuschlag (%)</label>
+      <input type="number" id="night" step="1" min="0" value="25" placeholder="z.B. 25" />
+    </div>
+    <div>
+      <label>Nachtschicht-Stunden/Monat</label>
+      <input type="number" id="nightHours" step="0.5" min="0" placeholder="z.B. 40" />
+    </div>
+  </div>
 
-        converter.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const amount = document.getElementById('amount').value;
-            const fromCurrency = document.getElementById('fromCurrency').value;
-            const toCurrency = document.getElementById('toCurrency').value;
+  <div class="grid">
+    <div>
+      <label>Überstunden-Zuschlag (%)</label>
+      <input type="number" id="over" step="1" min="0" value="25" placeholder="z.B. 25" />
+    </div>
+    <div>
+      <label>Überstunden pro Monat</label>
+      <input type="number" id="overHours" step="0.5" min="0" placeholder="z.B. 10" />
+    </div>
+  </div>
 
-            const rate = exchangeRates[fromCurrency][toCurrency];
-            const convertedAmount = (amount * rate).toFixed(2);
-            result.textContent = `Converted Amount: ${convertedAmount} ${toCurrency}`;
-        });
-    </script>
+  <button class="btn" onclick="calc()">Berechnen</button>
+
+  <div class="result" id="out">
+    <div class="big" id="total"></div>
+    <div class="detail" id="detail"></div>
+  </div>
+
+  <p class="hint">Keine Rechtsberatung – nur eine Orientierungshilfe.</p>
+</div>
+
+<script>
+function calc() {
+  const rate = parseFloat(document.getElementById('rate').value) || 0;
+  const hours = parseFloat(document.getElementById('hours').value) || 0;
+  const night = parseFloat(document.getElementById('night').value) || 0;
+  const nightH = parseFloat(document.getElementById('nightHours').value) || 0;
+  const over = parseFloat(document.getElementById('over').value) || 0;
+  const overH = parseFloat(document.getElementById('overHours').value) || 0;
+
+  if (!rate || !hours) { alert('Bitte mindestens Stundenlohn und Stunden eingeben.'); return; }
+
+  const base = rate * hours;
+  const nightPay = rate * (night / 100) * nightH;
+  const overPay = rate * (over / 100) * overH;
+  const total = base + nightPay + overPay;
+
+  document.getElementById('total').textContent = total.toFixed(2) + ' €';
+  document.getElementById('detail').innerHTML =
+    'Grundlohn: ' + base.toFixed(2) + ' €<br>' +
+    'Nachtschicht-Zuschläge: ' + nightPay.toFixed(2) + ' €<br>' +
+    'Überstunden-Zuschläge: ' + overPay.toFixed(2) + ' €<br><br>' +
+    '<strong>Pro Jahr: ' + (total * 12).toFixed(2) + ' €</strong>';
+
+  const out = document.getElementById('out');
+  out.style.display = 'block';
+}
+</script>
 </body>
 </html>
